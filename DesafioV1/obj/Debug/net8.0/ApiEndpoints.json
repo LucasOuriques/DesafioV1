@@ -1,0 +1,18 @@
+[
+  {
+    "ContainingType": "DesafioV1.Controllers.PedidoController",
+    "Method": "EmpacotarPedidos",
+    "RelativePath": "api/Pedido/empacotar",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "input",
+        "Type": "DesafioV1.Dtos.PedidoInputDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]

@@ -1,0 +1,45 @@
+﻿services:
+  desafio-api:
+    build:
+      context: ./DesafioV1
+      dockerfile: Dockerfile
+    container_name: desafio-api
+    ports:
+      - "5001:8080" # Mapeia a porta 5001 do seu computador para a porta 8080 do contêiner da API
+    depends_on:
+      sqlserver:
+        condition: service_healthy # Garante que a API só inicia se o SQL Server estiver saudável
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      # String de conexão para o SQL Server. 'sqlserver' é o nome do serviço na rede Docker.
+      # Usando a senha simplificada para teste, como havíamos combinado.
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=DesafioDB;User=sa;Password=Pass123!;TrustServerCertificate=True;
+    networks:
+      - desafio-net # Este serviço usa a rede 'desafio-net'
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: desafio-sqlserver
+    environment:
+      SA_PASSWORD: "Pass123!" # <--- Senha simplificada para teste
+      ACCEPT_EULA: "Y" # Aceita o EULA da Microsoft
+    ports:
+      - "1433:1433" # Mapeia a porta 1433 do seu computador para a porta 1433 interna do contêiner SQL Server
+    volumes:
+      - sqlvolume:/var/opt/mssql # Persiste os dados do SQL Server em um volume Docker
+    networks:
+      - desafio-net # Este serviço usa a rede 'desafio-net'
+    healthcheck: # Verifica a saúde do contêiner SQL Server
+      test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost,1433", "-U", "sa", "-P", "Pass123!", "-Q", "SELECT 1"] # Senha simplificada aqui
+      interval: 10s       # Verifica a cada 10 segundos
+      timeout: 5s         # Tempo limite para cada verificação
+      retries: 15         # Tenta 15 vezes antes de declarar o contêiner como não saudável
+      start_period: 120s   # Período inicial mais longo para o SQL Server subir
+
+# As definições de networks e volumes DEVEM estar no mesmo nível de 'services:'
+networks: # <--- ATENÇÃO: Nível de indentação correto aqui
+  desafio-net:
+    driver: bridge # Define uma rede Docker do tipo bridge
+
+volumes: # <--- E aqui também
+  sqlvolume: # Declara um volume persistente

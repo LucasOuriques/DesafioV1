@@ -1,0 +1,105 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "DesafioV1",
+    "version": "1.0"
+  },
+  "paths": {
+    "/api/Pedido/empacotar": {
+      "post": {
+        "tags": [
+          "Pedido"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PedidoInputDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PedidoInputDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/PedidoInputDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "DimensoesDto": {
+        "type": "object",
+        "properties": {
+          "altura": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "largura": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "comprimento": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PedidoDto": {
+        "type": "object",
+        "properties": {
+          "pedido_Id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "produtos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProdutoDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PedidoInputDto": {
+        "type": "object",
+        "properties": {
+          "pedidos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PedidoDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProdutoDto": {
+        "type": "object",
+        "properties": {
+          "produto_Id": {
+            "type": "string",
+            "nullable": true
+          },
+          "dimensoes": {
+            "$ref": "#/components/schemas/DimensoesDto"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}
